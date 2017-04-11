@@ -47,21 +47,17 @@ export class NSWKWebView extends View {
         this._navigationDelegate = NSWKNavDelegate.initWithOwner(new WeakRef(this));
     }
 
+    viewDidLoad() {
+        console.log('loadUrl');
+    }
+
     loadUrl(url: string) {
+        console.log('loadUrl');
         this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
     }
 
-    loadHTMLStringBaseURL(htmlString: string, baseUrl: string) {
-        this._ios.loadHTMLStringBaseURL(htmlString, NSURL.URLWithString(baseUrl));
-    }
-
-    onLoaded() {
-        super.onLoaded();
-        console.log('Loaded - 1');
-        this._ios.navigationDelegate = this._navigationDelegate;
-    }
-
     onUnloaded() {
+        console.log('onUnloaded');
         this._ios.navigationDelegate = null;
         super.onUnloaded();
     }
