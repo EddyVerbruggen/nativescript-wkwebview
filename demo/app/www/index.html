@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <title>Web View</title>
+    <style>
+        body {
+            background-color: #00aafc;
+            font-family: monospace;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+    <script>
+        var logElem, usernameElem;
+        var logLabel = 'Log: ';
+
+        function init() {
+            logElem = document.getElementById('log');
+            usernameElem = document.getElementById('username');
+            logElem.innerHTML = logLabel;
+        }
+
+        function setValue(str) {
+            logElem.innerHTML = logLabel + str;
+        }
+
+        function sendMessageToSwift() {
+            window.nsWebViewInterface.emit('messageHandler', usernameElem.value);
+        }
+    </script>
+</head>
+<body onload="init()">
+    <p>
+        <input type="text" id="username" value="Mino">
+        <button onclick="sendMessageToSwift()">Send message</button>
+    </p>
+    <p id="log"></p>
+
+    <script src="./lib/es6-promise.min.js"></script>
+    <script src="./lib/nativescript-webview-interface.js"></script>
+</body>
+</html>
