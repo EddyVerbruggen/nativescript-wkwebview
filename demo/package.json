@@ -18,7 +18,7 @@
         "nativescript-angular": "1.5.1",
         "nativescript-theme-core": "~1.0.2",
         "nativescript-webview-interface": "^1.4.1",
-        "nativescript-wkwebview": "https://github.com/asultonov/nativescript-wkwebview.git#master",
+        "nativescript-wkwebview": "https://github.com/asultonov/nativescript-wkwebview.git",
         "reflect-metadata": "~0.1.8",
         "rxjs": "~5.2.0",
         "tns-core-modules": "2.5.2",
