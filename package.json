@@ -15,9 +15,7 @@
         "demo.ios": "npm run preparedemo && cd demo && tns run ios --emulator",
         "demo.ios.device": "npm run preparedemo && cd demo && tns run ios",
         "preparedemo": "npm run build && cd demo && tns plugin remove nativescript-wkwebview && tns plugin add .. && tns install",
-        "setup": "npm i && cd demo && npm i && cd .. && npm run build && cd demo && tns plugin add .. && cd ..",
-        "test.ios": "cd demo && tns test ios --emulator",
-        "test.ios.device": "cd demo && tns test ios"
+        "setup": "npm i && cd demo && npm i && cd .. && npm run build && cd demo && tns plugin add .. && cd .."
     },
     "repository": {
         "type": "git",
