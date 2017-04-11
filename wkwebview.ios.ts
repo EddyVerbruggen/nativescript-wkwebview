@@ -56,6 +56,20 @@ export class NSWKWebView extends View {
         this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
     }
 
+    userContentController(userContentController: WKUserContentController, data: WKScriptMessage) {
+        const dict: any = data;
+        const username: string = dict.username;
+        const secretToken: string = dict.sectetToken;
+
+        this._ios.evaluateJavaScriptCompletionHandler('window.setValue(\'Kamon\')', (res, err) => {
+            if (err) {
+                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
+            } else {
+                console.log('Success evaluateJavaScriptCompletionHandler.');
+            }
+        });
+    }
+
     onUnloaded() {
         console.log('onUnloaded');
         this._ios.navigationDelegate = null;
