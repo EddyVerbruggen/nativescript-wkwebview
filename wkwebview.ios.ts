@@ -5,12 +5,12 @@ declare const NSURLRequest: any;
 declare const WKNavigationDelegate: any;
 declare const WKWebView: any;
 
-class NSWKNavDelegate extends NSObject implements WKNavigationDelegate {
+class NSWKNavigationDelegate extends NSObject implements WKNavigationDelegate {
     static ObjCProtocols = [WKNavigationDelegate];
     private _owner: WeakRef<NSWKWebView>;
 
-    static initWithOwner(owner: WeakRef<NSWKWebView>): NSWKNavDelegate {
-        const delegate = <NSWKNavDelegate>NSWKNavDelegate.new();
+    static initWithOwner(owner: WeakRef<NSWKWebView>): NSWKNavigationDelegate {
+        const delegate = <NSWKNavigationDelegate>NSWKNavigationDelegate.new();
         delegate._owner = owner;
         return delegate;
     }
@@ -44,7 +44,7 @@ export class NSWKWebView extends View {
         super();
 
         this._ios = WKWebView.new();
-        this._navigationDelegate = NSWKNavDelegate.initWithOwner(new WeakRef(this));
+        this._navigationDelegate = NSWKNavigationDelegate.initWithOwner(new WeakRef(this));
     }
 
     viewDidLoad() {
@@ -56,8 +56,8 @@ export class NSWKWebView extends View {
         this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
     }
 
-    userContentController(userContentController: WKUserContentController, data: WKScriptMessage) {
-        const dict: any = data;
+    userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage) {
+        const dict: any = scriptMessage;
         const username: string = dict.username;
         const secretToken: string = dict.sectetToken;
 
