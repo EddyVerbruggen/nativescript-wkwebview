@@ -1,37 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var view_1 = require("ui/core/view");
-var NSWKNavigationDelegate = (function (_super) {
-    __extends(NSWKNavigationDelegate, _super);
-    function NSWKNavigationDelegate() {
+var NSWKNavigationDelegateImpl = (function (_super) {
+    __extends(NSWKNavigationDelegateImpl, _super);
+    function NSWKNavigationDelegateImpl() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NSWKNavigationDelegate.initWithOwner = function (owner) {
-        var delegate = NSWKNavigationDelegate.new();
-        delegate._owner = owner;
-        return delegate;
+    NSWKNavigationDelegateImpl.initWithOwner = function (owner) {
+        var handler = NSWKNavigationDelegateImpl.new();
+        handler._owner = owner;
+        return handler;
     };
-    NSWKNavigationDelegate.prototype.didStartProvisionalNavigation = function (webView, navigation) {
-        console.log('didStartProvisionalNavigation');
-    };
-    NSWKNavigationDelegate.prototype.didFinishNavigation = function (webView, navigation) {
-        console.log('didFinishNavigation');
-    };
-    NSWKNavigationDelegate.prototype.didFailNavigationWithError = function (webView, navigation, error) {
-        console.log('didFailNavigationWithError');
-    };
-    NSWKNavigationDelegate.prototype.decidePolicyForNavigationActionDecisionHandler = function (webView, navigationAction, decisionHandler) {
-        console.log('decidePolicyForNavigationActionDecisionHandler');
-    };
-    return NSWKNavigationDelegate;
+    return NSWKNavigationDelegateImpl;
 }(NSObject));
-NSWKNavigationDelegate.ObjCProtocols = [WKNavigationDelegate];
+NSWKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
 var NSWKWebView = (function (_super) {
     __extends(NSWKWebView, _super);
     function NSWKWebView() {
         var _this = _super.call(this) || this;
         _this._ios = WKWebView.new();
-        _this._navigationDelegate = NSWKNavigationDelegate.initWithOwner(new WeakRef(_this));
         return _this;
     }
     Object.defineProperty(NSWKWebView.prototype, "ios", {
@@ -41,18 +28,22 @@ var NSWKWebView = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    NSWKWebView.prototype.onLoaded = function () {
+        _super.prototype.onLoaded.call(this);
+        this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
+        var self = this;
+        setTimeout(function () {
+        }, 0);
+    };
     NSWKWebView.prototype.viewDidLoad = function () {
-        console.log('loadUrl');
+        console.log('viewDidLoad');
     };
     NSWKWebView.prototype.loadUrl = function (url) {
         console.log('loadUrl');
-        this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
-    };
-    NSWKWebView.prototype.userContentController = function (userContentController, scriptMessage) {
-        var dict = scriptMessage;
-        var username = dict.username;
-        var secretToken = dict.sectetToken;
-        this._ios.evaluateJavaScriptCompletionHandler('window.setValue(\'Kamon\')', function (res, err) {
+        var myURL = NSURL.URLWithString('http://www.google.com');
+        var myRequest = NSURLRequest.requestWithURL(myURL);
+        this._ios.loadRequest(myRequest);
+        this._ios.evaluateJavaScriptCompletionHandler('window.alert(123)', function (res, err) {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             }
@@ -60,6 +51,22 @@ var NSWKWebView = (function (_super) {
                 console.log('Success evaluateJavaScriptCompletionHandler.');
             }
         });
+    };
+    NSWKWebView.prototype.userContentController = function (userContentController, scriptMessage) {
+        var dict = scriptMessage;
+        var username = dict.username;
+        var secretToken = dict.sectetToken;
+        this._ios.evaluateJavaScriptCompletionHandler('alert(123)', function (res, err) {
+            if (err) {
+                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
+            }
+            else {
+                console.log('Success evaluateJavaScriptCompletionHandler.');
+            }
+        });
+    };
+    NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
+        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
     };
     NSWKWebView.prototype.onUnloaded = function () {
         console.log('onUnloaded');

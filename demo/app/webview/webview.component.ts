@@ -3,19 +3,21 @@ import {registerElement} from 'nativescript-angular/element-registry';
 
 const NSWKWebView = require('nativescript-wkwebview').NSWKWebView;
 
-registerElement('WKWebView', () => NSWKWebView);
+registerElement('NSWKWebView', () => require('nativescript-wkwebview').NSWKWebView);
 
 @Component({
     moduleId: module.id,
-    selector: 'webview',
+    selector: 'webview-page',
     templateUrl: 'webview.component.html'
 })
 export class WebViewComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('webView') webView: ElementRef;
 
-    private wkWebView = new NSWKWebView();
-
     constructor(private changeDetectorRef: ChangeDetectorRef) {
+    }
+
+    onButtonTap() {
+        console.log(this.webView.nativeElement.URL);
     }
 
     ngOnInit(): void {
@@ -23,8 +25,9 @@ export class WebViewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.wkWebView.loadUrl('https://www.google.com');
-        this.wkWebView.onLoaded();
+        this.webView.nativeElement.loadUrl('~/www/index.html');
+        this.webView.nativeElement.onLoaded();
+        console.log(this.webView.nativeElement.URL);
     }
 
     ngOnDestroy(): void {

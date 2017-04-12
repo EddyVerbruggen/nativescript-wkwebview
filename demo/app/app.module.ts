@@ -1,3 +1,5 @@
+import {NativeScriptFormsModule} from 'nativescript-angular/forms';
+import {NativeScriptHttpModule} from 'nativescript-angular/http';
 import {NativeScriptModule} from 'nativescript-angular/nativescript.module';
 import {NgModule} from '@angular/core';
 
@@ -11,8 +13,10 @@ import {WebViewComponent} from './webview/webview.component';
         WebViewComponent
     ],
     imports: [
-        NativeScriptModule,
-        AppRoutingModule
+        AppRoutingModule,
+        NativeScriptFormsModule,
+        NativeScriptHttpModule,
+        NativeScriptModule
     ],
     providers: [],
     bootstrap: [AppComponent]

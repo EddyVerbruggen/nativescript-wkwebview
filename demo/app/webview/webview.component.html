@@ -1,3 +1,5 @@
-<StackLayout>
-    <WKWebView id="WKWebView"></WKWebView>
-</StackLayout>
+<ActionBar title="WKWebView" class="action-bar"></ActionBar>
+<GridLayout rows="50, *">
+    <Button class="btn btn-aqua red" row="0" text="TAP" (tap)="onButtonTap()"></Button>
+    <NSWKWebView #webView class="red" row="1"></NSWKWebView>
+</GridLayout>

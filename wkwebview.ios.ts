@@ -5,31 +5,31 @@ declare const NSURLRequest: any;
 declare const WKNavigationDelegate: any;
 declare const WKWebView: any;
 
-class NSWKNavigationDelegate extends NSObject implements WKNavigationDelegate {
+class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegate {
     static ObjCProtocols = [WKNavigationDelegate];
     private _owner: WeakRef<NSWKWebView>;
 
-    static initWithOwner(owner: WeakRef<NSWKWebView>): NSWKNavigationDelegate {
-        const delegate = <NSWKNavigationDelegate>NSWKNavigationDelegate.new();
-        delegate._owner = owner;
-        return delegate;
+    static initWithOwner(owner: WeakRef<NSWKWebView>): NSWKNavigationDelegateImpl {
+        const handler = <NSWKNavigationDelegateImpl>NSWKNavigationDelegateImpl.new();
+        handler._owner = owner;
+        return handler;
     }
 
-    didStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation) {
-        console.log('didStartProvisionalNavigation');
-    }
-
-    didFinishNavigation(webView: WKWebView, navigation: WKNavigation) {
-        console.log('didFinishNavigation');
-    }
-
-    didFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError) {
-        console.log('didFailNavigationWithError');
-    }
-
-    decidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: WKNavigationActionPolicy) {
-        console.log('decidePolicyForNavigationActionDecisionHandler');
-    }
+    // webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation) {
+    //     console.log('didStartProvisionalNavigation');
+    // }
+    //
+    // webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation) {
+    //     console.log('didFinishNavigation');
+    // }
+    //
+    // webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError) {
+    //     console.log('didFailNavigationWithError');
+    // }
+    //
+    // webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: WKNavigationActionPolicy) {
+    //     console.log('decidePolicyForNavigationActionDecisionHandler');
+    // }
 }
 
 export class NSWKWebView extends View {
@@ -42,9 +42,17 @@ export class NSWKWebView extends View {
 
     constructor() {
         super();
-
         this._ios = WKWebView.new();
-        this._navigationDelegate = NSWKNavigationDelegate.initWithOwner(new WeakRef(this));
+    }
+
+    onLoaded() {
+        super.onLoaded();
+        this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
+
+        const self = this;
+        setTimeout(function () {
+
+        }, 0);
     }
 
     viewDidLoad() {
@@ -53,7 +61,17 @@ export class NSWKWebView extends View {
 
     loadUrl(url: string) {
         console.log('loadUrl');
-        this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
+        let myURL = NSURL.URLWithString('http://www.google.com');
+        let myRequest = NSURLRequest.requestWithURL(myURL);
+        this._ios.loadRequest(myRequest);
+
+        this._ios.evaluateJavaScriptCompletionHandler('window.alert(123)', (res, err) => {
+            if (err) {
+                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
+            } else {
+                console.log('Success evaluateJavaScriptCompletionHandler.');
+            }
+        });
     }
 
     userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage) {
@@ -61,13 +79,17 @@ export class NSWKWebView extends View {
         const username: string = dict.username;
         const secretToken: string = dict.sectetToken;
 
-        this._ios.evaluateJavaScriptCompletionHandler('window.setValue(\'Kamon\')', (res, err) => {
+        this._ios.evaluateJavaScriptCompletionHandler('alert(123)', (res, err) => {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             } else {
                 console.log('Success evaluateJavaScriptCompletionHandler.');
             }
         });
+    }
+
+    evaluateJavaScript(javaScriptString: string, callback: Function) {
+        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
     }
 
     onUnloaded() {
