@@ -48,7 +48,7 @@ export class NSWKWebView extends View {
     }
 
     viewDidLoad() {
-        console.log('loadUrl');
+        console.log('viewDidLoad');
     }
 
     loadUrl(url: string) {
