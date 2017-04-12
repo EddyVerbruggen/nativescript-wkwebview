@@ -27,7 +27,6 @@ export class WebViewComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit(): void {
         this.webView.nativeElement.loadUrl('~/www/index.html');
         this.webView.nativeElement.onLoaded();
-        console.log(this.webView.nativeElement.URL);
     }
 
     ngOnDestroy(): void {

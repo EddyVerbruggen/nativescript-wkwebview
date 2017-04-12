@@ -15,9 +15,9 @@ class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegat
         return handler;
     }
 
-    webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: (p1: WKNavigationActionPolicy) => void): void {
-        console.log('webViewDecidePolicyForNavigationActionDecisionHandler');
-    }
+    // webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: (p1: WKNavigationActionPolicy) => void): void {
+    //     console.log('webViewDecidePolicyForNavigationActionDecisionHandler');
+    // }
 
     webViewDecidePolicyForNavigationResponseDecisionHandler(webView: WKWebView, navigationResponse: WKNavigationResponse, decisionHandler: (p1: WKNavigationResponsePolicy) => void): void {
         console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
@@ -73,6 +73,13 @@ export class NSWKWebView extends View {
         super.onLoaded();
         this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
 
+        if (this.width && this.height) {
+            this._ios.frame = CGRectMake(0, 0, this.width, this.height);
+        } else {
+            // Default size...
+            this._ios.frame = CGRectMake(0, 0, 400, 800);
+        }
+
         const self = this;
         setTimeout(function () {
 
@@ -85,7 +92,7 @@ export class NSWKWebView extends View {
 
     loadUrl(url: string) {
         console.log('loadUrl');
-        let myURL = NSURL.URLWithString('http://www.google.com');
+        let myURL = NSURL.URLWithString(url);
         let myRequest = NSURLRequest.requestWithURL(myURL);
         this._ios.loadRequest(myRequest);
 
@@ -93,7 +100,7 @@ export class NSWKWebView extends View {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             } else {
-                console.log('Success evaluateJavaScriptCompletionHandler.');
+                console.log('Success evaluateJavaScriptCompletionHandler');
             }
         });
     }
@@ -107,7 +114,7 @@ export class NSWKWebView extends View {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             } else {
-                console.log('Success evaluateJavaScriptCompletionHandler.');
+                console.log('Success evaluateJavaScriptCompletionHandler');
             }
         });
     }

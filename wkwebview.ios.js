@@ -11,6 +11,33 @@ var NSWKNavigationDelegateImpl = (function (_super) {
         handler._owner = owner;
         return handler;
     };
+    NSWKNavigationDelegateImpl.prototype.webViewDecidePolicyForNavigationResponseDecisionHandler = function (webView, navigationResponse, decisionHandler) {
+        console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidCommitNavigation = function (webView, navigation) {
+        console.log('webViewDidCommitNavigation');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidFailNavigationWithError = function (webView, navigation, error) {
+        console.log('webViewDidFailNavigationWithError');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidFailProvisionalNavigationWithError = function (webView, navigation, error) {
+        console.log('webViewDidFailProvisionalNavigationWithError');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidFinishNavigation = function (webView, navigation) {
+        console.log('webViewDidFinishNavigation');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidReceiveAuthenticationChallengeCompletionHandler = function (webView, challenge, completionHandler) {
+        console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidReceiveServerRedirectForProvisionalNavigation = function (webView, navigation) {
+        console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewDidStartProvisionalNavigation = function (webView, navigation) {
+        console.log('webViewDidStartProvisionalNavigation');
+    };
+    NSWKNavigationDelegateImpl.prototype.webViewWebContentProcessDidTerminate = function (webView) {
+        console.log('webViewWebContentProcessDidTerminate');
+    };
     return NSWKNavigationDelegateImpl;
 }(NSObject));
 NSWKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
@@ -31,6 +58,12 @@ var NSWKWebView = (function (_super) {
     NSWKWebView.prototype.onLoaded = function () {
         _super.prototype.onLoaded.call(this);
         this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
+        if (this.width && this.height) {
+            this._ios.frame = CGRectMake(0, 0, this.width, this.height);
+        }
+        else {
+            this._ios.frame = CGRectMake(0, 0, 400, 800);
+        }
         var self = this;
         setTimeout(function () {
         }, 0);
@@ -40,15 +73,15 @@ var NSWKWebView = (function (_super) {
     };
     NSWKWebView.prototype.loadUrl = function (url) {
         console.log('loadUrl');
-        var myURL = NSURL.URLWithString('http://www.google.com');
+        var myURL = NSURL.URLWithString(url);
         var myRequest = NSURLRequest.requestWithURL(myURL);
         this._ios.loadRequest(myRequest);
-        this._ios.evaluateJavaScriptCompletionHandler('window.alert(123)', function (res, err) {
+        this.evaluateJavaScript('window.alert(123)', function (res, err) {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             }
             else {
-                console.log('Success evaluateJavaScriptCompletionHandler.');
+                console.log('Success evaluateJavaScriptCompletionHandler');
             }
         });
     };
@@ -56,12 +89,12 @@ var NSWKWebView = (function (_super) {
         var dict = scriptMessage;
         var username = dict.username;
         var secretToken = dict.sectetToken;
-        this._ios.evaluateJavaScriptCompletionHandler('alert(123)', function (res, err) {
+        this.evaluateJavaScript('alert(123)', function (res, err) {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             }
             else {
-                console.log('Success evaluateJavaScriptCompletionHandler.');
+                console.log('Success evaluateJavaScriptCompletionHandler');
             }
         });
     };
