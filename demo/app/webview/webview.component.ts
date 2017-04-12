@@ -3,7 +3,7 @@ import {registerElement} from 'nativescript-angular/element-registry';
 
 const NSWKWebView = require('nativescript-wkwebview').NSWKWebView;
 
-registerElement('NSWKWebView', () => require('nativescript-wkwebview').NSWKWebView);
+registerElement('NSWKWebView', () => NSWKWebView);
 
 @Component({
     moduleId: module.id,
