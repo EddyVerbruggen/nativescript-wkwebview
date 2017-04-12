@@ -65,7 +65,7 @@ export class NSWKWebView extends View {
         let myRequest = NSURLRequest.requestWithURL(myURL);
         this._ios.loadRequest(myRequest);
 
-        this._ios.evaluateJavaScriptCompletionHandler('window.alert(123)', (res, err) => {
+        this.evaluateJavaScript('window.alert(123)', (res, err) => {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             } else {
@@ -79,7 +79,7 @@ export class NSWKWebView extends View {
         const username: string = dict.username;
         const secretToken: string = dict.sectetToken;
 
-        this._ios.evaluateJavaScriptCompletionHandler('alert(123)', (res, err) => {
+        this.evaluateJavaScript('alert(123)', (res, err) => {
             if (err) {
                 console.log('Error evaluateJavaScriptCompletionHandler: ', err);
             } else {
