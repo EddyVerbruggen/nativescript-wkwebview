@@ -15,21 +15,45 @@ class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegat
         return handler;
     }
 
-    // webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation) {
-    //     console.log('didStartProvisionalNavigation');
-    // }
-    //
-    // webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation) {
-    //     console.log('didFinishNavigation');
-    // }
-    //
-    // webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError) {
-    //     console.log('didFailNavigationWithError');
-    // }
-    //
-    // webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: WKNavigationActionPolicy) {
-    //     console.log('decidePolicyForNavigationActionDecisionHandler');
-    // }
+    webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: (p1: WKNavigationActionPolicy) => void): void {
+        console.log('webViewDecidePolicyForNavigationActionDecisionHandler');
+    }
+
+    webViewDecidePolicyForNavigationResponseDecisionHandler(webView: WKWebView, navigationResponse: WKNavigationResponse, decisionHandler: (p1: WKNavigationResponsePolicy) => void): void {
+        console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
+    }
+
+    webViewDidCommitNavigation(webView: WKWebView, navigation: WKNavigation): void {
+        console.log('webViewDidCommitNavigation');
+    }
+
+    webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
+        console.log('webViewDidFailNavigationWithError');
+    }
+
+    webViewDidFailProvisionalNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
+        console.log('webViewDidFailProvisionalNavigationWithError');
+    }
+
+    webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation): void {
+        console.log('webViewDidFinishNavigation');
+    }
+
+    webViewDidReceiveAuthenticationChallengeCompletionHandler(webView: WKWebView, challenge: NSURLAuthenticationChallenge, completionHandler: (p1: NSURLSessionAuthChallengeDisposition, p2: NSURLCredential) => void): void {
+        console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
+    }
+
+    webViewDidReceiveServerRedirectForProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
+        console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
+    }
+
+    webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
+        console.log('webViewDidStartProvisionalNavigation');
+    }
+
+    webViewWebContentProcessDidTerminate(webView: WKWebView): void {
+        console.log('webViewWebContentProcessDidTerminate');
+    }
 }
 
 export class NSWKWebView extends View {
