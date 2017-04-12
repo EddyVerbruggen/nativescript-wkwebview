@@ -1,7 +1,7 @@
 {
     "name": "nativescript-wkwebview",
     "version": "1.0.0",
-    "description": "NativeScript WKWebView plugin for ios.",
+    "description": "NativeScript WKWebView plugin for iOS.",
     "main": "wkwebview",
     "typings": "index.d.ts",
     "nativescript": {
