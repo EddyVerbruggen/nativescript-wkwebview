@@ -7,6 +7,7 @@ export declare class NSWKWebView extends View {
     onLoaded(): void;
     onUnloaded(): void;
     loadUrl(url: string): void;
+    reload(): WKNavigation;
     userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage): void;
     evaluateJavaScript(javaScriptString: string, callback: Function): void;
 }

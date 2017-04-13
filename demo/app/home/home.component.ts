@@ -17,7 +17,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onButtonTaped(): void {
-        console.log(this.webView.nativeElement.URL);
+        this.webView.nativeElement.reload();
+
+        setTimeout(() => {
+            this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
+                console.log('Res:', res);
+                console.log('Err:', err);
+            });
+        }, 5000);
     }
 
     ngOnInit(): void {

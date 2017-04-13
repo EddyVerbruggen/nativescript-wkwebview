@@ -11,8 +11,14 @@
         }
     </style>
     <script>
+        var body;
+
         function init() {
-            alert('Init!');
+            body = document.getElementsByTagName('body')[0];
+        }
+
+        function red() {
+            body.style.backgroundColor = 'red';
         }
     </script>
 </head>

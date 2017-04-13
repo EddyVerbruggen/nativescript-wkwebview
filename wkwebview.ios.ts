@@ -1,7 +1,9 @@
+import * as fs from 'file-system';
 import {View} from 'ui/core/view';
 
 declare const NSURL: any;
 declare const NSURLRequest: any;
+declare const WKNavigation: any;
 declare const WKNavigationDelegate: any;
 declare const WKWebView: any;
 
@@ -71,7 +73,7 @@ export class NSWKWebView extends View {
 
     onLoaded(): void {
         super.onLoaded();
-        this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
+        // this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
 
         if (this.width && this.height) {
             this._ios.frame = CGRectMake(0, 0, this.width, this.height);
@@ -88,35 +90,30 @@ export class NSWKWebView extends View {
     }
 
     loadUrl(url: string): void {
-        console.log('loadUrl');
-        let myURL = NSURL.URLWithString(url);
-        let myRequest = NSURLRequest.requestWithURL(myURL);
-        this._ios.loadRequest(myRequest);
+        if (url.indexOf('~/') === 0) {
+            url = fs.path.join(fs.knownFolders.currentApp().path, url.replace('~/', ''));
+            const myURL = NSURL.fileURLWithPath(url);
+            this._ios.loadFileURLAllowingReadAccessToURL(myURL, myURL);
+        } else {
+            const myURL = NSURL.URLWithString(url);
+            const myRequest = NSURLRequest.requestWithURL(myURL);
+            this._ios.loadRequest(myRequest);
+        }
+    }
 
-        this.evaluateJavaScript('window.alert(123)', (res, err) => {
-            if (err) {
-                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
-            } else {
-                console.log('Success evaluateJavaScriptCompletionHandler');
-            }
-        });
+    reload(): WKNavigation {
+        return this._ios.reload();
     }
 
     userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage): void {
         const dict: any = scriptMessage;
         const username: string = dict.username;
         const secretToken: string = dict.sectetToken;
-
-        this.evaluateJavaScript('alert(123)', (res, err) => {
-            if (err) {
-                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
-            } else {
-                console.log('Success evaluateJavaScriptCompletionHandler');
-            }
-        });
     }
 
     evaluateJavaScript(javaScriptString: string, callback: Function): void {
-        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
+        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, (res, err) => {
+            callback(res, err);
+        });
     }
 }

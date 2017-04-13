@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var fs = require("file-system");
 var view_1 = require("ui/core/view");
 var NSWKNavigationDelegateImpl = (function (_super) {
     __extends(NSWKNavigationDelegateImpl, _super);
@@ -57,7 +58,6 @@ var NSWKWebView = (function (_super) {
     });
     NSWKWebView.prototype.onLoaded = function () {
         _super.prototype.onLoaded.call(this);
-        this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
         if (this.width && this.height) {
             this._ios.frame = CGRectMake(0, 0, this.width, this.height);
         }
@@ -71,34 +71,29 @@ var NSWKWebView = (function (_super) {
         _super.prototype.onUnloaded.call(this);
     };
     NSWKWebView.prototype.loadUrl = function (url) {
-        console.log('loadUrl');
-        var myURL = NSURL.URLWithString(url);
-        var myRequest = NSURLRequest.requestWithURL(myURL);
-        this._ios.loadRequest(myRequest);
-        this.evaluateJavaScript('window.alert(123)', function (res, err) {
-            if (err) {
-                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
-            }
-            else {
-                console.log('Success evaluateJavaScriptCompletionHandler');
-            }
-        });
+        if (url.indexOf('~/') === 0) {
+            url = fs.path.join(fs.knownFolders.currentApp().path, url.replace('~/', ''));
+            var myURL = NSURL.fileURLWithPath(url);
+            this._ios.loadFileURLAllowingReadAccessToURL(myURL, myURL);
+        }
+        else {
+            var myURL = NSURL.URLWithString(url);
+            var myRequest = NSURLRequest.requestWithURL(myURL);
+            this._ios.loadRequest(myRequest);
+        }
+    };
+    NSWKWebView.prototype.reload = function () {
+        return this._ios.reload();
     };
     NSWKWebView.prototype.userContentController = function (userContentController, scriptMessage) {
         var dict = scriptMessage;
         var username = dict.username;
         var secretToken = dict.sectetToken;
-        this.evaluateJavaScript('alert(123)', function (res, err) {
-            if (err) {
-                console.log('Error evaluateJavaScriptCompletionHandler: ', err);
-            }
-            else {
-                console.log('Success evaluateJavaScriptCompletionHandler');
-            }
-        });
     };
     NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
-        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
+        this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, function (res, err) {
+            callback(res, err);
+        });
     };
     return NSWKWebView;
 }(view_1.View));
