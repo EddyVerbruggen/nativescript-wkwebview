@@ -86,9 +86,8 @@ var NSWKWebView = (function (_super) {
         return this._ios.reload();
     };
     NSWKWebView.prototype.userContentController = function (userContentController, scriptMessage) {
-        var dict = scriptMessage;
-        var username = dict.username;
-        var secretToken = dict.sectetToken;
+        console.log('WKUser:', userContentController);
+        console.log('scriptMessage:', WKScriptMessage);
     };
     NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
         this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, function (res, err) {
