@@ -6,19 +6,28 @@
         body {
             background-color: #00aafc;
             font-family: monospace;
-            font-size: 24px;
+            font-size: 40px;
             text-align: center;
         }
     </style>
     <script>
-        var body;
+        var body, windowKeys;
 
         function init() {
             body = document.getElementsByTagName('body')[0];
+            windowKeys = [];
         }
 
         function red() {
             body.style.backgroundColor = 'red';
+
+            for (var key in window) {
+                if (window.hasOwnProperty(key)) {
+                    windowKeys.push(key);
+                }
+            }
+
+            body.innerText = windowKeys.join('\n');
         }
     </script>
 </head>

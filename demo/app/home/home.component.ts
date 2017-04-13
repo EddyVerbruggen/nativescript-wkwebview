@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                 console.log('Res:', res);
                 console.log('Err:', err);
             });
-        }, 5000);
+        }, 3000);
     }
 
     ngOnInit(): void {
