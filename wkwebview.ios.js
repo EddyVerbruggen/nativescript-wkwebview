@@ -64,12 +64,11 @@ var NSWKWebView = (function (_super) {
         else {
             this._ios.frame = CGRectMake(0, 0, 400, 800);
         }
-        var self = this;
-        setTimeout(function () {
-        }, 0);
     };
-    NSWKWebView.prototype.viewDidLoad = function () {
-        console.log('viewDidLoad');
+    NSWKWebView.prototype.onUnloaded = function () {
+        console.log('onUnloaded');
+        this._ios.navigationDelegate = null;
+        _super.prototype.onUnloaded.call(this);
     };
     NSWKWebView.prototype.loadUrl = function (url) {
         console.log('loadUrl');
@@ -100,11 +99,6 @@ var NSWKWebView = (function (_super) {
     };
     NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
         this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
-    };
-    NSWKWebView.prototype.onUnloaded = function () {
-        console.log('onUnloaded');
-        this._ios.navigationDelegate = null;
-        _super.prototype.onUnloaded.call(this);
     };
     return NSWKWebView;
 }(view_1.View));

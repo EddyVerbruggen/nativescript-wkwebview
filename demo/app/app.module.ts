@@ -5,12 +5,12 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app.routing';
-import {WebViewComponent} from './webview/webview.component';
+import {HomeComponent} from './home/home.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        WebViewComponent
+        HomeComponent
     ],
     imports: [
         AppRoutingModule,

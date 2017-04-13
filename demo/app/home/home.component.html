@@ -1,0 +1,7 @@
+<ActionBar title="WKWebView" class="action-bar"></ActionBar>
+<GridLayout rows="50,*">
+    <Button class="btn btn-primary" row="0" text="Button" (tap)="onButtonTaped()"></Button>
+    <StackLayout row="1" style="border-width: 5; margin: 16">
+        <NSWKWebView #webView></NSWKWebView>
+    </StackLayout>
+</GridLayout>

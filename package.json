@@ -36,9 +36,6 @@
     "homepage": "https://github.com/asultonov/nativescript-wkwebview",
     "readmeFilename": "README.md",
     "devDependencies": {
-        "gulp": "^3.9.1",
-        "gulp-tslint": "^7.1.0",
-        "gulp-typescript": "^3.1.5",
         "prompt": "^1.0.0",
         "rimraf": "^2.5.0",
         "tns-core-modules": "^2.5.1",

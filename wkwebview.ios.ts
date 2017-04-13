@@ -69,7 +69,7 @@ export class NSWKWebView extends View {
         this._ios = WKWebView.new();
     }
 
-    onLoaded() {
+    onLoaded(): void {
         super.onLoaded();
         this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
 
@@ -79,18 +79,15 @@ export class NSWKWebView extends View {
             // Default size...
             this._ios.frame = CGRectMake(0, 0, 400, 800);
         }
-
-        const self = this;
-        setTimeout(function () {
-
-        }, 0);
     }
 
-    viewDidLoad() {
-        console.log('viewDidLoad');
+    onUnloaded(): void {
+        console.log('onUnloaded');
+        this._ios.navigationDelegate = null;
+        super.onUnloaded();
     }
 
-    loadUrl(url: string) {
+    loadUrl(url: string): void {
         console.log('loadUrl');
         let myURL = NSURL.URLWithString(url);
         let myRequest = NSURLRequest.requestWithURL(myURL);
@@ -105,7 +102,7 @@ export class NSWKWebView extends View {
         });
     }
 
-    userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage) {
+    userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage): void {
         const dict: any = scriptMessage;
         const username: string = dict.username;
         const secretToken: string = dict.sectetToken;
@@ -119,13 +116,7 @@ export class NSWKWebView extends View {
         });
     }
 
-    evaluateJavaScript(javaScriptString: string, callback: Function) {
+    evaluateJavaScript(javaScriptString: string, callback: Function): void {
         this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, callback());
-    }
-
-    onUnloaded() {
-        console.log('onUnloaded');
-        this._ios.navigationDelegate = null;
-        super.onUnloaded();
     }
 }
