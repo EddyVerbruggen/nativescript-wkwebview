@@ -6,8 +6,9 @@
         body {
             background-color: #00aafc;
             font-family: monospace;
-            font-size: 40px;
+            font-size: 48px;
             text-align: center;
+            color: white;
         }
     </style>
     <script>
@@ -19,15 +20,30 @@
         }
 
         function red() {
-            body.style.backgroundColor = 'red';
-
             for (var key in window) {
                 if (window.hasOwnProperty(key)) {
                     windowKeys.push(key);
                 }
             }
 
-            body.innerText = windowKeys.join('\n');
+            windowKeys.push('------------ WebKit ------------');
+
+//            window['webkit']['messageHandlers']['userLogin'].postMessage({
+//                username: 'Minoo',
+//                secretToken: 'Khojapanj'
+//            });
+
+            setTimeout(function () {
+                for (var key in window['webkit']) {
+                    if (window['webkit'].hasOwnProperty(key)) {
+                        windowKeys.push(key);
+                    }
+                }
+
+                body.style.color = 'black';
+                body.style.backgroundColor = 'white';
+                body.innerText = windowKeys.join('\n');
+            }, 500);
         }
     </script>
 </head>

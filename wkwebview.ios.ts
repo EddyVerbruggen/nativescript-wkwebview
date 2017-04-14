@@ -1,11 +1,11 @@
 import * as fs from 'file-system';
+import * as utils from 'utils/utils';
 import {View} from 'ui/core/view';
 
 declare const NSURL: any;
 declare const NSURLRequest: any;
 declare const WKNavigation: any;
 declare const WKNavigationDelegate: any;
-declare const WKWebView: any;
 
 class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegate {
     static ObjCProtocols = [WKNavigationDelegate];
@@ -21,41 +21,97 @@ class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegat
     //     console.log('webViewDecidePolicyForNavigationActionDecisionHandler');
     // }
 
-    webViewDecidePolicyForNavigationResponseDecisionHandler(webView: WKWebView, navigationResponse: WKNavigationResponse, decisionHandler: (p1: WKNavigationResponsePolicy) => void): void {
-        console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
+    // webViewDecidePolicyForNavigationResponseDecisionHandler(webView: WKWebView, navigationResponse: WKNavigationResponse, decisionHandler: (p1: WKNavigationResponsePolicy) => void): void {
+    //     console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
+    // }
+    //
+    // webViewDidCommitNavigation(webView: WKWebView, navigation: WKNavigation): void {
+    //     console.log('webViewDidCommitNavigation');
+    // }
+    //
+    // webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
+    //     console.log('webViewDidFailNavigationWithError');
+    // }
+    //
+    // webViewDidFailProvisionalNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
+    //     console.log('webViewDidFailProvisionalNavigationWithError');
+    // }
+    //
+    // webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation): void {
+    //     console.log('webViewDidFinishNavigation');
+    // }
+
+    // webViewDidReceiveAuthenticationChallengeCompletionHandler(webView: WKWebView, challenge: NSURLAuthenticationChallenge, completionHandler: (p1: NSURLSessionAuthChallengeDisposition, p2: NSURLCredential) => void): void {
+    //     console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
+    // }
+    //
+    // webViewDidReceiveServerRedirectForProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
+    //     console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
+    // }
+    //
+    // webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
+    //     console.log('webViewDidStartProvisionalNavigation');
+    // }
+    //
+    // webViewWebContentProcessDidTerminate(webView: WKWebView): void {
+    //     console.log('webViewWebContentProcessDidTerminate');
+    // }
+}
+
+class NSWKScriptMessageHandler implements WKScriptMessageHandler {
+    debugDescription?: string;
+    description: string;
+    hash: number;
+    isProxy: boolean;
+    superclass: typeof NSObject;
+
+    class(): typeof NSObject {
+        return NSObject.superclass();
     }
 
-    webViewDidCommitNavigation(webView: WKWebView, navigation: WKNavigation): void {
-        console.log('webViewDidCommitNavigation');
+    conformsToProtocol(aProtocol: any): boolean {
+        return true;
     }
 
-    webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
-        console.log('webViewDidFailNavigationWithError');
+    isEqual(object: any): boolean {
+        return true;
     }
 
-    webViewDidFailProvisionalNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
-        console.log('webViewDidFailProvisionalNavigationWithError');
+    isKindOfClass(aClass: typeof NSObject): boolean {
+        return true;
     }
 
-    webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation): void {
-        console.log('webViewDidFinishNavigation');
+    isMemberOfClass(aClass: typeof NSObject): boolean {
+        return true;
     }
 
-    webViewDidReceiveAuthenticationChallengeCompletionHandler(webView: WKWebView, challenge: NSURLAuthenticationChallenge, completionHandler: (p1: NSURLSessionAuthChallengeDisposition, p2: NSURLCredential) => void): void {
-        console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
+    performSelector(aSelector: string): any {
+        return {};
     }
 
-    webViewDidReceiveServerRedirectForProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
-        console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
+    performSelectorWithObject(aSelector: string, object: any): any {
+        return {};
     }
 
-    webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
-        console.log('webViewDidStartProvisionalNavigation');
+    performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any {
+        return {};
     }
 
-    webViewWebContentProcessDidTerminate(webView: WKWebView): void {
-        console.log('webViewWebContentProcessDidTerminate');
+    respondsToSelector(aSelector: string): boolean {
+        return true;
     }
+
+    retainCount(): number {
+        return 0;
+    }
+
+    self(): NSObjectProtocol {
+        return this;
+    }
+
+    userContentControllerDidReceiveScriptMessage(userContentController, message): void {
+        console.log('Message: ', message);
+    };
 }
 
 export class NSWKWebView extends View {
@@ -64,22 +120,28 @@ export class NSWKWebView extends View {
     }
 
     private _ios: WKWebView;
-    private _navigationDelegate: any;
+    private _scriptMessageHandler: WKScriptMessageHandler;
+    private _userContentController: WKUserContentController;
 
     constructor() {
         super();
-        this._ios = WKWebView.new();
+
+        this._scriptMessageHandler = new NSWKScriptMessageHandler();
+        this._userContentController = WKUserContentController.new();
+        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'userLogin');
+
+        const frame = CGRectMake(0, 0, 400, 800);
+        const config = WKWebViewConfiguration.new();
+        config.userContentController = this._userContentController;
+        this._ios = new WKWebView({frame: frame, configuration: config});
+        this._ios.navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
     }
 
     onLoaded(): void {
         super.onLoaded();
-        // this._ios.navigationDelegate = this._navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
 
         if (this.width && this.height) {
             this._ios.frame = CGRectMake(0, 0, this.width, this.height);
-        } else {
-            // Default size...
-            this._ios.frame = CGRectMake(0, 0, 400, 800);
         }
     }
 
@@ -103,12 +165,6 @@ export class NSWKWebView extends View {
 
     reload(): WKNavigation {
         return this._ios.reload();
-    }
-
-    userContentController(userContentController: WKUserContentController, scriptMessage: WKScriptMessage): void {
-        const dict: any = scriptMessage;
-        const username: string = dict.username;
-        const secretToken: string = dict.sectetToken;
     }
 
     evaluateJavaScript(javaScriptString: string, callback: Function): void {

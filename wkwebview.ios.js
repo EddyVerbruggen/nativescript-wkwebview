@@ -12,41 +12,63 @@ var NSWKNavigationDelegateImpl = (function (_super) {
         handler._owner = owner;
         return handler;
     };
-    NSWKNavigationDelegateImpl.prototype.webViewDecidePolicyForNavigationResponseDecisionHandler = function (webView, navigationResponse, decisionHandler) {
-        console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidCommitNavigation = function (webView, navigation) {
-        console.log('webViewDidCommitNavigation');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidFailNavigationWithError = function (webView, navigation, error) {
-        console.log('webViewDidFailNavigationWithError');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidFailProvisionalNavigationWithError = function (webView, navigation, error) {
-        console.log('webViewDidFailProvisionalNavigationWithError');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidFinishNavigation = function (webView, navigation) {
-        console.log('webViewDidFinishNavigation');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidReceiveAuthenticationChallengeCompletionHandler = function (webView, challenge, completionHandler) {
-        console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidReceiveServerRedirectForProvisionalNavigation = function (webView, navigation) {
-        console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewDidStartProvisionalNavigation = function (webView, navigation) {
-        console.log('webViewDidStartProvisionalNavigation');
-    };
-    NSWKNavigationDelegateImpl.prototype.webViewWebContentProcessDidTerminate = function (webView) {
-        console.log('webViewWebContentProcessDidTerminate');
-    };
     return NSWKNavigationDelegateImpl;
 }(NSObject));
 NSWKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
+var NSWKScriptMessageHandler = (function () {
+    function NSWKScriptMessageHandler() {
+    }
+    NSWKScriptMessageHandler.prototype.class = function () {
+        return NSObject.superclass();
+    };
+    NSWKScriptMessageHandler.prototype.conformsToProtocol = function (aProtocol) {
+        return true;
+    };
+    NSWKScriptMessageHandler.prototype.isEqual = function (object) {
+        return true;
+    };
+    NSWKScriptMessageHandler.prototype.isKindOfClass = function (aClass) {
+        return true;
+    };
+    NSWKScriptMessageHandler.prototype.isMemberOfClass = function (aClass) {
+        return true;
+    };
+    NSWKScriptMessageHandler.prototype.performSelector = function (aSelector) {
+        return {};
+    };
+    NSWKScriptMessageHandler.prototype.performSelectorWithObject = function (aSelector, object) {
+        return {};
+    };
+    NSWKScriptMessageHandler.prototype.performSelectorWithObjectWithObject = function (aSelector, object1, object2) {
+        return {};
+    };
+    NSWKScriptMessageHandler.prototype.respondsToSelector = function (aSelector) {
+        return true;
+    };
+    NSWKScriptMessageHandler.prototype.retainCount = function () {
+        return 0;
+    };
+    NSWKScriptMessageHandler.prototype.self = function () {
+        return this;
+    };
+    NSWKScriptMessageHandler.prototype.userContentControllerDidReceiveScriptMessage = function (userContentController, message) {
+        console.log('Message: ', message);
+    };
+    ;
+    return NSWKScriptMessageHandler;
+}());
 var NSWKWebView = (function (_super) {
     __extends(NSWKWebView, _super);
     function NSWKWebView() {
         var _this = _super.call(this) || this;
-        _this._ios = WKWebView.new();
+        _this._scriptMessageHandler = new NSWKScriptMessageHandler();
+        _this._userContentController = WKUserContentController.new();
+        _this._userContentController.addScriptMessageHandlerName(_this._scriptMessageHandler, 'userLogin');
+        var frame = CGRectMake(0, 0, 400, 800);
+        var config = WKWebViewConfiguration.new();
+        config.userContentController = _this._userContentController;
+        _this._ios = new WKWebView({ frame: frame, configuration: config });
+        _this._ios.navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(_this));
         return _this;
     }
     Object.defineProperty(NSWKWebView.prototype, "ios", {
@@ -60,9 +82,6 @@ var NSWKWebView = (function (_super) {
         _super.prototype.onLoaded.call(this);
         if (this.width && this.height) {
             this._ios.frame = CGRectMake(0, 0, this.width, this.height);
-        }
-        else {
-            this._ios.frame = CGRectMake(0, 0, 400, 800);
         }
     };
     NSWKWebView.prototype.onUnloaded = function () {
@@ -84,10 +103,6 @@ var NSWKWebView = (function (_super) {
     };
     NSWKWebView.prototype.reload = function () {
         return this._ios.reload();
-    };
-    NSWKWebView.prototype.userContentController = function (userContentController, scriptMessage) {
-        console.log('WKUser:', userContentController);
-        console.log('scriptMessage:', WKScriptMessage);
     };
     NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
         this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, function (res, err) {
