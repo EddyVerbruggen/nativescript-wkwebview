@@ -131,7 +131,7 @@ export class NSWKWebView extends View {
 
         this._scriptMessageHandler = new NSWKScriptMessageHandler();
         this._userContentController = WKUserContentController.new();
-        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'sayhunMessenger');
+        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'vkMessenger');
 
         const frame = CGRectMake(0, 0, 400, 800);
         const config = WKWebViewConfiguration.new();

@@ -21,7 +21,7 @@
 
         function red() {
             try {
-                window.webkit.messageHandlers.sayhunMessenger.postMessage('message');
+                window.webkit.messageHandlers.vkMessenger.postMessage('message');
                 windowKeys.push('Your message has been sent!');
             } catch (err) {
                 windowKeys.push('Error: ' + err.toString());
