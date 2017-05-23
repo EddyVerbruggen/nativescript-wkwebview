@@ -63,7 +63,8 @@ var NSWKWebView = (function (_super) {
         var _this = _super.call(this) || this;
         _this._scriptMessageHandler = new NSWKScriptMessageHandler();
         _this._userContentController = WKUserContentController.new();
-        _this._userContentController.addScriptMessageHandlerName(_this._scriptMessageHandler, 'userLogin');
+        console.log(_this._scriptMessageHandler.userContentControllerDidReceiveScriptMessage);
+        _this._userContentController.addScriptMessageHandlerName(_this._scriptMessageHandler, 'sayhunMessenger');
         var frame = CGRectMake(0, 0, 400, 800);
         var config = WKWebViewConfiguration.new();
         config.userContentController = _this._userContentController;
@@ -85,7 +86,6 @@ var NSWKWebView = (function (_super) {
         }
     };
     NSWKWebView.prototype.onUnloaded = function () {
-        console.log('onUnloaded');
         this._ios.navigationDelegate = null;
         _super.prototype.onUnloaded.call(this);
     };

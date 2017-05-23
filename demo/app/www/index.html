@@ -20,26 +20,14 @@
         }
 
         function red() {
-            for (var key in window) {
-                if (window.hasOwnProperty(key)) {
-                    windowKeys.push(key);
-                }
+            try {
+                window.webkit.messageHandlers.sayhunMessenger.postMessage('message');
+                windowKeys.push('Your message has been sent!');
+            } catch (err) {
+                windowKeys.push('Error: ' + err.toString());
             }
 
-            windowKeys.push('------------ WebKit ------------');
-
-//            window['webkit']['messageHandlers']['userLogin'].postMessage({
-//                username: 'Minoo',
-//                secretToken: 'Khojapanj'
-//            });
-
             setTimeout(function () {
-                for (var key in window['webkit']) {
-                    if (window['webkit'].hasOwnProperty(key)) {
-                        windowKeys.push(key);
-                    }
-                }
-
                 body.style.color = 'black';
                 body.style.backgroundColor = 'white';
                 body.innerText = windowKeys.join('\n');

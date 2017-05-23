@@ -59,6 +59,7 @@ class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegat
 }
 
 class NSWKScriptMessageHandler implements WKScriptMessageHandler {
+    // NSObjectProtocol
     debugDescription?: string;
     description: string;
     hash: number;
@@ -109,6 +110,8 @@ class NSWKScriptMessageHandler implements WKScriptMessageHandler {
         return this;
     }
 
+
+    // WKScriptMessageHandler
     userContentControllerDidReceiveScriptMessage(userContentController, message): void {
         console.log('Message: ', message);
     };
@@ -128,7 +131,7 @@ export class NSWKWebView extends View {
 
         this._scriptMessageHandler = new NSWKScriptMessageHandler();
         this._userContentController = WKUserContentController.new();
-        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'userLogin');
+        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'sayhunMessenger');
 
         const frame = CGRectMake(0, 0, 400, 800);
         const config = WKWebViewConfiguration.new();
@@ -146,7 +149,6 @@ export class NSWKWebView extends View {
     }
 
     onUnloaded(): void {
-        console.log('onUnloaded');
         this._ios.navigationDelegate = null;
         super.onUnloaded();
     }
