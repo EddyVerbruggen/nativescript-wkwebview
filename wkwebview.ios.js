@@ -15,53 +15,25 @@ var NSWKNavigationDelegateImpl = (function (_super) {
     return NSWKNavigationDelegateImpl;
 }(NSObject));
 NSWKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
-var NSWKScriptMessageHandler = (function () {
+var NSWKScriptMessageHandler = (function (_super) {
+    __extends(NSWKScriptMessageHandler, _super);
     function NSWKScriptMessageHandler() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    NSWKScriptMessageHandler.prototype.class = function () {
-        return NSObject.superclass();
-    };
-    NSWKScriptMessageHandler.prototype.conformsToProtocol = function (aProtocol) {
-        return true;
-    };
-    NSWKScriptMessageHandler.prototype.isEqual = function (object) {
-        return true;
-    };
-    NSWKScriptMessageHandler.prototype.isKindOfClass = function (aClass) {
-        return true;
-    };
-    NSWKScriptMessageHandler.prototype.isMemberOfClass = function (aClass) {
-        return true;
-    };
-    NSWKScriptMessageHandler.prototype.performSelector = function (aSelector) {
-        return {};
-    };
-    NSWKScriptMessageHandler.prototype.performSelectorWithObject = function (aSelector, object) {
-        return {};
-    };
-    NSWKScriptMessageHandler.prototype.performSelectorWithObjectWithObject = function (aSelector, object1, object2) {
-        return {};
-    };
-    NSWKScriptMessageHandler.prototype.respondsToSelector = function (aSelector) {
-        return true;
-    };
-    NSWKScriptMessageHandler.prototype.retainCount = function () {
-        return 0;
-    };
-    NSWKScriptMessageHandler.prototype.self = function () {
-        return this;
+    NSWKScriptMessageHandler.new = function () {
+        return _super.new.call(this);
     };
     NSWKScriptMessageHandler.prototype.userContentControllerDidReceiveScriptMessage = function (userContentController, message) {
-        console.log('Message: ', message);
+        console.log('Message: ', message.body);
     };
-    ;
     return NSWKScriptMessageHandler;
-}());
+}(NSObject));
+NSWKScriptMessageHandler.ObjCProtocols = [WKScriptMessageHandler];
 var NSWKWebView = (function (_super) {
     __extends(NSWKWebView, _super);
     function NSWKWebView() {
         var _this = _super.call(this) || this;
-        _this._scriptMessageHandler = new NSWKScriptMessageHandler();
+        _this._scriptMessageHandler = NSWKScriptMessageHandler.new();
         _this._userContentController = WKUserContentController.new();
         _this._userContentController.addScriptMessageHandlerName(_this._scriptMessageHandler, 'vkMessenger');
         var frame = CGRectMake(0, 0, 400, 800);
