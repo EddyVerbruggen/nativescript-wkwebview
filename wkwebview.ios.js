@@ -1,46 +1,56 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("file-system");
+var Subject_1 = require("rxjs/Subject");
 var view_1 = require("ui/core/view");
-var NSWKNavigationDelegateImpl = (function (_super) {
-    __extends(NSWKNavigationDelegateImpl, _super);
-    function NSWKNavigationDelegateImpl() {
+var ModuleSubjects = {};
+var WKNavigationDelegateImpl = (function (_super) {
+    __extends(WKNavigationDelegateImpl, _super);
+    function WKNavigationDelegateImpl() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NSWKNavigationDelegateImpl.initWithOwner = function (owner) {
-        var handler = NSWKNavigationDelegateImpl.new();
+    WKNavigationDelegateImpl.initWithOwner = function (owner) {
+        var handler = WKNavigationDelegateImpl.new();
         handler._owner = owner;
         return handler;
     };
-    return NSWKNavigationDelegateImpl;
+    return WKNavigationDelegateImpl;
 }(NSObject));
-NSWKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
-var NSWKScriptMessageHandler = (function (_super) {
-    __extends(NSWKScriptMessageHandler, _super);
-    function NSWKScriptMessageHandler() {
+WKNavigationDelegateImpl.ObjCProtocols = [WKNavigationDelegate];
+var WKScriptMessageHandlerImpl = (function (_super) {
+    __extends(WKScriptMessageHandlerImpl, _super);
+    function WKScriptMessageHandlerImpl() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NSWKScriptMessageHandler.new = function () {
+    WKScriptMessageHandlerImpl.new = function () {
         return _super.new.call(this);
     };
-    NSWKScriptMessageHandler.prototype.userContentControllerDidReceiveScriptMessage = function (userContentController, message) {
-        console.log('Message: ', message.body);
+    WKScriptMessageHandlerImpl.prototype.on = function (messageHandlerName) {
+        if (!ModuleSubjects[messageHandlerName]) {
+            ModuleSubjects[messageHandlerName] = new Subject_1.Subject();
+        }
+        return ModuleSubjects[messageHandlerName];
     };
-    return NSWKScriptMessageHandler;
+    WKScriptMessageHandlerImpl.prototype.userContentControllerDidReceiveScriptMessage = function (userContentController, message) {
+        if (ModuleSubjects[message.name]) {
+            ModuleSubjects[message.name].next(message.body);
+        }
+    };
+    return WKScriptMessageHandlerImpl;
 }(NSObject));
-NSWKScriptMessageHandler.ObjCProtocols = [WKScriptMessageHandler];
+WKScriptMessageHandlerImpl.ObjCProtocols = [WKScriptMessageHandler];
 var NSWKWebView = (function (_super) {
     __extends(NSWKWebView, _super);
     function NSWKWebView() {
         var _this = _super.call(this) || this;
-        _this._scriptMessageHandler = NSWKScriptMessageHandler.new();
+        _this._messageHandlers = [];
+        _this._scriptMessageHandler = WKScriptMessageHandlerImpl.new();
         _this._userContentController = WKUserContentController.new();
-        _this._userContentController.addScriptMessageHandlerName(_this._scriptMessageHandler, 'vkMessenger');
         var frame = CGRectMake(0, 0, 400, 800);
         var config = WKWebViewConfiguration.new();
         config.userContentController = _this._userContentController;
         _this._ios = new WKWebView({ frame: frame, configuration: config });
-        _this._ios.navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(_this));
+        _this._ios.navigationDelegate = WKNavigationDelegateImpl.initWithOwner(new WeakRef(_this));
         return _this;
     }
     Object.defineProperty(NSWKWebView.prototype, "ios", {
@@ -74,6 +84,20 @@ var NSWKWebView = (function (_super) {
     };
     NSWKWebView.prototype.reload = function () {
         return this._ios.reload();
+    };
+    NSWKWebView.prototype.addMessageHandler = function (messageHandlerName) {
+        if (this._messageHandlers.indexOf(messageHandlerName) === -1) {
+            this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, messageHandlerName);
+            this._messageHandlers.push(messageHandlerName);
+        }
+        return this._scriptMessageHandler.on(messageHandlerName);
+    };
+    NSWKWebView.prototype.removeMessageHandler = function (messageHandlerName) {
+        var index = this._messageHandlers.indexOf(messageHandlerName);
+        if (index > -1) {
+            this._userContentController.removeScriptMessageHandlerForName(messageHandlerName);
+            this._messageHandlers.splice(index, 1);
+        }
     };
     NSWKWebView.prototype.evaluateJavaScript = function (javaScriptString, callback) {
         this._ios.evaluateJavaScriptCompletionHandler(javaScriptString, function (res, err) {

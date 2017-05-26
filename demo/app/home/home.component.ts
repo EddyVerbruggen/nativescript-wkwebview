@@ -2,7 +2,6 @@ import {Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef} from
 import {registerElement} from 'nativescript-angular/element-registry';
 
 const NSWKWebView = require('nativescript-wkwebview').NSWKWebView;
-
 registerElement('NSWKWebView', () => NSWKWebView);
 
 @Component({
@@ -18,11 +17,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onButtonTaped(): void {
         this.webView.nativeElement.reload();
+        this.webView.nativeElement.addMessageHandler('vkMessenger').subscribe(data => {
+            console.log('vkMessenger: ', data);
+        });
 
         setTimeout(() => {
             this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
-                console.log('Res:', res);
-                console.log('Err:', err);
+                console.log('evaluateJavaScript: ', res, err);
             });
         }, 1000);
     }

@@ -1,5 +1,5 @@
 import * as fs from 'file-system';
-import * as utils from 'utils/utils';
+import {Subject} from 'rxjs/Subject';
 import {View} from 'ui/core/view';
 
 declare const NSURL: any;
@@ -7,66 +7,37 @@ declare const NSURLRequest: any;
 declare const WKNavigation: any;
 declare const WKNavigationDelegate: any;
 
-class NSWKNavigationDelegateImpl extends NSObject implements WKNavigationDelegate {
+const SUBJECTS: any = {};
+
+class WKNavigationDelegateImpl extends NSObject implements WKNavigationDelegate {
     static ObjCProtocols = [WKNavigationDelegate];
     private _owner: WeakRef<NSWKWebView>;
 
-    static initWithOwner(owner: WeakRef<NSWKWebView>): NSWKNavigationDelegateImpl {
-        const handler = <NSWKNavigationDelegateImpl>NSWKNavigationDelegateImpl.new();
+    static initWithOwner(owner: WeakRef<NSWKWebView>): WKNavigationDelegateImpl {
+        const handler = <WKNavigationDelegateImpl>WKNavigationDelegateImpl.new();
         handler._owner = owner;
         return handler;
     }
-
-    // webViewDecidePolicyForNavigationActionDecisionHandler(webView: WKWebView, navigationAction: WKNavigationAction, decisionHandler: (p1: WKNavigationActionPolicy) => void): void {
-    //     console.log('webViewDecidePolicyForNavigationActionDecisionHandler');
-    // }
-
-    // webViewDecidePolicyForNavigationResponseDecisionHandler(webView: WKWebView, navigationResponse: WKNavigationResponse, decisionHandler: (p1: WKNavigationResponsePolicy) => void): void {
-    //     console.log('webViewDecidePolicyForNavigationResponseDecisionHandler');
-    // }
-    //
-    // webViewDidCommitNavigation(webView: WKWebView, navigation: WKNavigation): void {
-    //     console.log('webViewDidCommitNavigation');
-    // }
-    //
-    // webViewDidFailNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
-    //     console.log('webViewDidFailNavigationWithError');
-    // }
-    //
-    // webViewDidFailProvisionalNavigationWithError(webView: WKWebView, navigation: WKNavigation, error: NSError): void {
-    //     console.log('webViewDidFailProvisionalNavigationWithError');
-    // }
-    //
-    // webViewDidFinishNavigation(webView: WKWebView, navigation: WKNavigation): void {
-    //     console.log('webViewDidFinishNavigation');
-    // }
-
-    // webViewDidReceiveAuthenticationChallengeCompletionHandler(webView: WKWebView, challenge: NSURLAuthenticationChallenge, completionHandler: (p1: NSURLSessionAuthChallengeDisposition, p2: NSURLCredential) => void): void {
-    //     console.log('webViewDidReceiveAuthenticationChallengeCompletionHandler');
-    // }
-    //
-    // webViewDidReceiveServerRedirectForProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
-    //     console.log('webViewDidReceiveServerRedirectForProvisionalNavigation');
-    // }
-    //
-    // webViewDidStartProvisionalNavigation(webView: WKWebView, navigation: WKNavigation): void {
-    //     console.log('webViewDidStartProvisionalNavigation');
-    // }
-    //
-    // webViewWebContentProcessDidTerminate(webView: WKWebView): void {
-    //     console.log('webViewWebContentProcessDidTerminate');
-    // }
 }
 
-class NSWKScriptMessageHandler extends NSObject implements WKScriptMessageHandler {
+class WKScriptMessageHandlerImpl extends NSObject implements WKScriptMessageHandler {
     static ObjCProtocols = [WKScriptMessageHandler];
 
-    static new(): NSWKScriptMessageHandler {
-        return <NSWKScriptMessageHandler>super.new();
+    static new(): WKScriptMessageHandlerImpl {
+        return <WKScriptMessageHandlerImpl>super.new();
+    }
+
+    on(messageHandlerName: string): Subject<any> {
+        if (!SUBJECTS[messageHandlerName]) {
+            SUBJECTS[messageHandlerName] = new Subject<any>();
+        }
+        return SUBJECTS[messageHandlerName];
     }
 
     userContentControllerDidReceiveScriptMessage(userContentController: WKUserContentController, message: WKScriptMessage): void {
-        console.log('Message: ', message.body);
+        if (SUBJECTS[message.name]) {
+            SUBJECTS[message.name].next(message.body);
+        }
     }
 }
 
@@ -76,26 +47,23 @@ export class NSWKWebView extends View {
     }
 
     private _ios: WKWebView;
-    private _scriptMessageHandler: WKScriptMessageHandler;
+    private _messageHandlers: Array<string> = [];
+    private _scriptMessageHandler: WKScriptMessageHandlerImpl;
     private _userContentController: WKUserContentController;
 
     constructor() {
         super();
-
-        this._scriptMessageHandler = NSWKScriptMessageHandler.new();
+        this._scriptMessageHandler = WKScriptMessageHandlerImpl.new();
         this._userContentController = WKUserContentController.new();
-        this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, 'vkMessenger');
-
         const frame = CGRectMake(0, 0, 400, 800);
         const config = WKWebViewConfiguration.new();
         config.userContentController = this._userContentController;
         this._ios = new WKWebView({frame: frame, configuration: config});
-        this._ios.navigationDelegate = NSWKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
+        this._ios.navigationDelegate = WKNavigationDelegateImpl.initWithOwner(new WeakRef(this));
     }
 
     onLoaded(): void {
         super.onLoaded();
-
         if (this.width && this.height) {
             this._ios.frame = CGRectMake(0, 0, this.width, this.height);
         }
@@ -120,6 +88,22 @@ export class NSWKWebView extends View {
 
     reload(): WKNavigation {
         return this._ios.reload();
+    }
+
+    addMessageHandler(messageHandlerName: string): Subject<any> {
+        if (this._messageHandlers.indexOf(messageHandlerName) === -1) {
+            this._userContentController.addScriptMessageHandlerName(this._scriptMessageHandler, messageHandlerName);
+            this._messageHandlers.push(messageHandlerName);
+        }
+        return this._scriptMessageHandler.on(messageHandlerName);
+    }
+
+    removeMessageHandler(messageHandlerName: string): void {
+        const index = this._messageHandlers.indexOf(messageHandlerName);
+        if (index > -1) {
+            this._userContentController.removeScriptMessageHandlerForName(messageHandlerName);
+            this._messageHandlers.splice(index, 1);
+        }
     }
 
     evaluateJavaScript(javaScriptString: string, callback: Function): void {
