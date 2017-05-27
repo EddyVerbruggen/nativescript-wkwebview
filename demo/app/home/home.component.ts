@@ -17,15 +17,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onButtonTaped(): void {
         this.webView.nativeElement.reload();
-        this.webView.nativeElement.addMessageHandler('vkMessenger').subscribe(data => {
-            console.log('vkMessenger: ', data);
-        });
-
-        setTimeout(() => {
-            this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
-                console.log('evaluateJavaScript: ', res, err);
-            });
-        }, 1000);
+        // this.webView.nativeElement.addMessageHandler('vkMessenger').subscribe(data => {
+        //     console.log('vkMessenger: ', data);
+        // });
+        //
+        // setTimeout(() => {
+        //     this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
+        //         console.log('evaluateJavaScript: ', res, err);
+        //     });
+        // }, 1000);
     }
 
     ngOnInit(): void {
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.webView.nativeElement.loadUrl('~/www/index.html');
+        this.webView.nativeElement.loadUrl('http://www.google.com');
     }
 
     ngOnDestroy(): void {

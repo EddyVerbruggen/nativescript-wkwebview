@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs/Subject';
-import { View } from 'ui/core/view';
+import { View } from 'tns-core-modules/ui/core/view';
 export declare class NSWKWebView extends View {
     readonly ios: WKWebView;
     private _ios;

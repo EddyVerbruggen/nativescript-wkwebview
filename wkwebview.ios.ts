@@ -1,6 +1,6 @@
-import * as fs from 'file-system';
+import * as fs from 'tns-core-modules/file-system';
 import {Subject} from 'rxjs/Subject';
-import {View} from 'ui/core/view';
+import {View} from 'tns-core-modules/ui/core/view';
 
 declare const NSURL: any;
 declare const NSURLRequest: any;
@@ -64,9 +64,7 @@ export class NSWKWebView extends View {
 
     onLoaded(): void {
         super.onLoaded();
-        if (this.width && this.height) {
-            this._ios.frame = CGRectMake(0, 0, this.width, this.height);
-        }
+        this._ios.frame = CGRectMake(0, 0, 600, 900);
     }
 
     onUnloaded(): void {

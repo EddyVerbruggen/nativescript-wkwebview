@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("file-system");
+var fs = require("tns-core-modules/file-system");
 var Subject_1 = require("rxjs/Subject");
-var view_1 = require("ui/core/view");
-var ModuleSubjects = {};
+var view_1 = require("tns-core-modules/ui/core/view");
+var SUBJECTS = {};
 var WKNavigationDelegateImpl = (function (_super) {
     __extends(WKNavigationDelegateImpl, _super);
     function WKNavigationDelegateImpl() {
@@ -26,14 +26,14 @@ var WKScriptMessageHandlerImpl = (function (_super) {
         return _super.new.call(this);
     };
     WKScriptMessageHandlerImpl.prototype.on = function (messageHandlerName) {
-        if (!ModuleSubjects[messageHandlerName]) {
-            ModuleSubjects[messageHandlerName] = new Subject_1.Subject();
+        if (!SUBJECTS[messageHandlerName]) {
+            SUBJECTS[messageHandlerName] = new Subject_1.Subject();
         }
-        return ModuleSubjects[messageHandlerName];
+        return SUBJECTS[messageHandlerName];
     };
     WKScriptMessageHandlerImpl.prototype.userContentControllerDidReceiveScriptMessage = function (userContentController, message) {
-        if (ModuleSubjects[message.name]) {
-            ModuleSubjects[message.name].next(message.body);
+        if (SUBJECTS[message.name]) {
+            SUBJECTS[message.name].next(message.body);
         }
     };
     return WKScriptMessageHandlerImpl;
@@ -62,9 +62,7 @@ var NSWKWebView = (function (_super) {
     });
     NSWKWebView.prototype.onLoaded = function () {
         _super.prototype.onLoaded.call(this);
-        if (this.width && this.height) {
-            this._ios.frame = CGRectMake(0, 0, this.width, this.height);
-        }
+        this._ios.frame = CGRectMake(0, 0, 600, 900);
     };
     NSWKWebView.prototype.onUnloaded = function () {
         this._ios.navigationDelegate = null;
