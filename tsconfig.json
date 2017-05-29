@@ -10,7 +10,6 @@
         "lib": [
             "es2016"
         ],
-        "sourceMap": true,
         "pretty": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
@@ -24,8 +23,7 @@
             "./node_modules/@types",
             "./node_modules"
         ],
-        "types": [
-        ]
+        "types": []
     },
     "exclude": [
         "demo",

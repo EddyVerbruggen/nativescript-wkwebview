@@ -105,4 +105,3 @@ var NSWKWebView = (function (_super) {
     return NSWKWebView;
 }(view_1.View));
 exports.NSWKWebView = NSWKWebView;
-//# sourceMappingURL=wkwebview.ios.js.map

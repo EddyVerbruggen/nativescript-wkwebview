@@ -2,26 +2,26 @@
   "nativescript": {
     "id": "org.nativescript.demo",
     "tns-ios": {
-      "version": "2.5.0"
+      "version": "3.0.1"
     }
   },
   "dependencies": {
-    "@angular/animations": "4.0.0",
-    "@angular/common": "4.0.0",
-    "@angular/compiler": "4.0.0",
-    "@angular/core": "4.0.0",
-    "@angular/forms": "4.0.0",
-    "@angular/http": "4.0.0",
-    "@angular/platform-browser": "4.0.0",
-    "@angular/platform-browser-dynamic": "4.0.0",
-    "@angular/router": "4.0.0",
+    "@angular/animations": "4.1.0",
+    "@angular/common": "4.1.0",
+    "@angular/compiler": "4.1.0",
+    "@angular/core": "4.1.0",
+    "@angular/forms": "4.1.0",
+    "@angular/http": "4.1.0",
+    "@angular/platform-browser": "4.1.0",
+    "@angular/platform-browser-dynamic": "4.1.0",
+    "@angular/router": "4.1.0",
     "nativescript-angular": "^3.0.0",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-wkwebview": "file:///Users/mini/Projects/nativescript-wkwebview",
     "reflect-metadata": "~0.1.8",
     "rxjs": "~5.2.0",
     "tns-core-modules": "^3.0.1",
-    "zone.js": "~0.8.2"
+    "zone.js": "^0.8.11"
   },
   "devDependencies": {
     "babel-traverse": "6.24.1",
@@ -29,8 +29,8 @@
     "babylon": "6.16.1",
     "lazy": "1.0.11",
     "nativescript-dev-android-snapshot": "^0.*.*",
-    "nativescript-dev-typescript": "~0.3.5",
-    "tns-platform-declarations": "^2.5.2",
-    "typescript": "~2.1.0"
+    "nativescript-dev-typescript": "^0.4.5",
+    "tns-platform-declarations": "^3.0.1",
+    "typescript": "^2.3.3"
   }
 }

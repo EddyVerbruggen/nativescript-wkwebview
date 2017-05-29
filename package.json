@@ -5,8 +5,8 @@
   "main": "wkwebview",
   "typings": "index.d.ts",
   "nativescript": {
-    "platforms": {
-      "ios": "2.5.0"
+    "tns-ios": {
+      "version": "3.0.1"
     }
   },
   "scripts": {
@@ -45,7 +45,7 @@
     "tns-core-modules": "^3.0.1",
     "tns-platform-declarations": "^3.0.1",
     "tslint": "^5.1.0",
-    "typescript": "^2.1.0",
+    "typescript": "^2.3.3",
     "zone.js": "^0.8.11"
   }
 }
