@@ -64,7 +64,6 @@ export class NSWKWebView extends View {
 
     onLoaded(): void {
         super.onLoaded();
-        this._ios.frame = CGRectMake(0, 0, 600, 900);
     }
 
     onUnloaded(): void {

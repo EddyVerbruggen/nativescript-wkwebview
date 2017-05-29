@@ -62,7 +62,7 @@ var NSWKWebView = (function (_super) {
     });
     NSWKWebView.prototype.onLoaded = function () {
         _super.prototype.onLoaded.call(this);
-        this._ios.frame = CGRectMake(0, 0, 600, 900);
+        console.log('onLoaded');
     };
     NSWKWebView.prototype.onUnloaded = function () {
         this._ios.navigationDelegate = null;
@@ -73,14 +73,17 @@ var NSWKWebView = (function (_super) {
             url = fs.path.join(fs.knownFolders.currentApp().path, url.replace('~/', ''));
             var myURL = NSURL.fileURLWithPath(url);
             this._ios.loadFileURLAllowingReadAccessToURL(myURL, myURL);
+            console.log('fileURLWithPath');
         }
         else {
             var myURL = NSURL.URLWithString(url);
             var myRequest = NSURLRequest.requestWithURL(myURL);
             this._ios.loadRequest(myRequest);
+            console.log('requestWithURL');
         }
     };
     NSWKWebView.prototype.reload = function () {
+        console.log('reload');
         return this._ios.reload();
     };
     NSWKWebView.prototype.addMessageHandler = function (messageHandlerName) {

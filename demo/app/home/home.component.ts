@@ -4,6 +4,11 @@ import {registerElement} from 'nativescript-angular/element-registry';
 const NSWKWebView = require('nativescript-wkwebview').NSWKWebView;
 registerElement('NSWKWebView', () => NSWKWebView);
 
+declare const NSURL: any;
+declare const NSURLRequest: any;
+declare const WKNavigation: any;
+declare const WKNavigationDelegate: any;
+
 @Component({
     moduleId: module.id,
     selector: 'home',
@@ -17,15 +22,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onButtonTaped(): void {
         this.webView.nativeElement.reload();
-        // this.webView.nativeElement.addMessageHandler('vkMessenger').subscribe(data => {
-        //     console.log('vkMessenger: ', data);
-        // });
-        //
-        // setTimeout(() => {
-        //     this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
-        //         console.log('evaluateJavaScript: ', res, err);
-        //     });
-        // }, 1000);
+
+        this.webView.nativeElement.addMessageHandler('vkMessenger').subscribe(data => {
+            console.log('vkMessenger: ', data);
+        });
+
+        setTimeout(() => {
+            this.webView.nativeElement.evaluateJavaScript('red();', (res, err) => {
+                console.log('evaluateJavaScript: ', res, err);
+            });
+        }, 1000);
     }
 
     ngOnInit(): void {
@@ -33,7 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.webView.nativeElement.loadUrl('http://www.google.com');
+        this.webView.nativeElement.loadUrl('~/www/index.html');
     }
 
     ngOnDestroy(): void {
